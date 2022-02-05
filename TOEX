@@ -1,0 +1,31 @@
+import glob
+from openpyxl import Workbook, load_workbook
+from datetime import datetime
+
+def main():
+    files = glob.glob('*.xlsx')
+
+    res_wb = Workbook()
+    res_ws = res_wb.active
+    res_ctr = 0
+    
+    oid_ctr = 0
+
+    for file in files:
+        file_wb = load_workbook(file)
+        file_ws = file_wb.active
+        file_ctr = 12
+        while True:
+            if not file_ws.cell(row=file_ctr, column=2).value:
+                break
+            res_ws.append([file_ws.cell(row=file_ctr, column=2).value, file_ws['B1'].value])
+            oid_ctr += 1
+            file_ctr += 1
+        res_ctr += 1
+    res_wb.save(f'TOEXPORT{datetime.now().strftime("%Y%m%d%I%M%p")}.xlsx')
+    print(f'Total TO (file): {len(files)}')
+    print(f'Total OID: {oid_ctr}')
+
+
+if __name__ == '__main__':
+    main()
